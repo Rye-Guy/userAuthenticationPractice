@@ -6,7 +6,6 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const routes = require('./routes/router');
 
-app.use('/', routes);
 
 mongoose.connect('mongodb://localhost/authPractice');
 var db = mongoose.connection;
@@ -18,6 +17,10 @@ db.once('open', () =>{
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+
+app.use(express.static(__dirname + '/public'));
+
+app.use('/', routes);
 
 app.listen(3000, () =>{
     console.log("server running");
