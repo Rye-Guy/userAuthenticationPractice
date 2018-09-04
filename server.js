@@ -19,8 +19,10 @@ app.use(session({
     secret: '911 was an inside job',
     resave: true,
     saveUninitialized: false,
-    // userID: req.session.userID
-}))
+    store: new MongoStore({
+        mongooseConnection: db
+    })
+}));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));

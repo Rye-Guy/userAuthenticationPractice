@@ -30,7 +30,7 @@ router.post('/', (req, res)=>{
                     console.log(err)
                 }else{
                     req.session.userId = user._id;
-                    return res.redirect('/');
+                    return res.redirect('/profile');
                 }
             });
        }else if(req.body.logemail && req.body.logpassword){
@@ -42,14 +42,31 @@ router.post('/', (req, res)=>{
             }else{
                 console.log(user);
                 req.session.userId = user._id;
-                return res.redirect('/');
+                return res.redirect('/profile');
             }
            });
        }else{
            let err = new Error('All Fields Required');
            err.status = 400;
-           return res.json(userData);
+           return res.json(err);
        }
+});
+
+router.get('/profile', function(req, res){
+    User.findById(req.session.userId)
+    .exec(function(err, user){
+        if(err){
+            console.log(err);
+        }else{
+            if(user === null){
+                var err = new Error('Not authorized! Go back!');
+                err.status = 400;
+                return console.log(err);
+            }else{
+                return res.send('<h1>Name: </h1>' + user.username + '<h2>Mail: </h2>' + user.email + '<br><a type="button" href="/logout">Logout</a>');
+            }
+        }
+    })
 });
 
 module.exports = router;
