@@ -34,8 +34,10 @@ router.post('/', (req, res)=>{
                 }
             });
        }else if(req.body.logemail && req.body.logpassword){
+        console.log(req.body);
            User.authenticate(req.body.logemail, req.body.logpassword, (error, user) =>{
             if(error || !user){
+                console.log(user);
                 
                 let err = new Error('Wrong email and/or password');
                 err.status = 401; 
