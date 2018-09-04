@@ -14,11 +14,12 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () =>{
     console.log('db connected!');
 });
-
+//TRACKING LOGINS
 app.use(session({
     secret: '911 was an inside job',
     resave: true,
-    saveUninitialized: false
+    saveUninitialized: false,
+    // userID: req.session.userID
 }))
 
 app.use(bodyParser.json());
