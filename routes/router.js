@@ -2,16 +2,17 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 
-router.get('/', (req, res) =>{
+router.get('/', (req, res, next) =>{
    return res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 
-router.post('/', (req, res)=>{
+router.post('/', (req, res, next)=>{
     
     if(req.body.password !== req.body.passwordConf){
         let err = new Error('Passwords do not match!');
         err.status = 400; 
         res.send('passwords do not match');
+        return next(err);
     }
     if(req.body.email &&
        req.body.username &&
@@ -27,7 +28,7 @@ router.post('/', (req, res)=>{
 
             User.create(userData, (err, user) => {
                 if(err){
-                    console.log(err)
+                    return next(err);
                 }else{
                     req.session.userId = user._id;
                     return res.redirect('/profile');
@@ -37,10 +38,9 @@ router.post('/', (req, res)=>{
         console.log(req.body);
            User.authenticate(req.body.logemail, req.body.logpassword, (error, user) =>{
             if(error || !user){
-                console.log(user);
-                
                 let err = new Error('Wrong email and/or password');
                 err.status = 401; 
+                return next(err);
             }else{
                 console.log(user);
                 req.session.userId = user._id;
@@ -50,7 +50,7 @@ router.post('/', (req, res)=>{
        }else{
            let err = new Error('All Fields Required');
            err.status = 400;
-           return res.json(err);
+           return next(err);
        }
 });
 
